@@ -1,13 +1,11 @@
 <?php
+
+namespace Phpixme;
+
 /**
- * Created by PhpStorm.
- * User: rgladson
- * Date: 1/4/2016
- * Time: 10:20 AM
+ * Class Some
+ * @package Phpixme
  */
-
-namespace PHPixme;
-
 class Some extends Maybe
 {
     private $done = true;

@@ -1,27 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rgladson
- * Date: 1/11/2016
- * Time: 3:38 PM
- */
 
-namespace tests\PHPixme;
-require_once "tests/PHPixme_TestCase.php";
-use PHPixme as P;
+namespace Phpixme;
 
-class SeqTest extends PHPixme_TestCase
+class SeqTest extends PhpixmeTestCase
 {
     public function seqSourceProvider()
     {
         return [
             '[]' => [[]]
             , '[1,2,3]' => [[1, 2, 3]]
-            , 'Some(1)' => [P\Some(1)]
-            , 'None' => [P\None()]
+            , 'Some(1)' => [Some(1)]
+            , 'None' => [None()]
             , 'JSON({one:1, two: 2})' => [['one' => 1, 'two' => 2]]
-            , 'S[]' => [P\Seq([])]
-            , 'S[1,2,3]' => [P\Seq([1, 2, 3])]
+            , 'S[]' => [Seq([])]
+            , 'S[1,2,3]' => [Seq([1, 2, 3])]
         ];
     }
 
@@ -30,14 +22,14 @@ class SeqTest extends PHPixme_TestCase
      */
     public function test_seq_companion($value)
     {
-        $seq = P\Seq($value);
+        $seq = Seq($value);
         $this->assertStringEndsWith(
             '\Seq'
-            , P\Seq
+            , Seq::class
             , 'Ensure the constant ends with the function/class name'
         );
         $this->assertInstanceOf(
-            P\Seq
+            Seq::class
             , $seq
             , 'Seq companion function should produce instances of Seq class'
         );
@@ -49,9 +41,9 @@ class SeqTest extends PHPixme_TestCase
     public function test_seq_static_of($value)
     {
 
-        $seq = call_user_func_array(P\Seq . '::of', is_array($value) ? $value : [$value]);
+        $seq = call_user_func_array(Seq::class . '::of', is_array($value) ? $value : [$value]);
         $this->assertInstanceOf(
-            P\Seq
+            Seq::class
             , $seq
             , 'Seq::of should produce a instance of Seq class'
         );
@@ -62,9 +54,9 @@ class SeqTest extends PHPixme_TestCase
      */
     public function test_static_from($value)
     {
-        $seq = P\Seq::from($value);
+        $seq = Seq::from($value);
         $this->assertInstanceOf(
-            P\Seq
+            Seq::class
             , $seq
             , 'Seq::from should produce an instance of Seq Class'
         );
@@ -77,8 +69,8 @@ class SeqTest extends PHPixme_TestCase
             [[]]
             , [[1, 2, 3]]
             , [['one' => 1, 'two' => 2]]
-            , [[P\Some(1), P\None()]]
-            , [[P\Seq::of(1, 2, 3), P\Seq::of(4, 5, 6)]]
+            , [[Some(1), None()]]
+            , [[Seq::of(1, 2, 3), Seq::of(4, 5, 6)]]
         ];
     }
 
@@ -89,7 +81,7 @@ class SeqTest extends PHPixme_TestCase
     {
         $this->assertEquals(
             $value
-            , P\Seq($value)->toArray()
+            , Seq($value)->toArray()
             , 'Seq->toArray will should return its inner array, and should be functionally equivalent to the array it was given'
         );
     }
@@ -98,9 +90,9 @@ class SeqTest extends PHPixme_TestCase
      * @dataProvider arrayOfThingsProvider
      */
     public function test_values ($source) {
-        $values = P\Seq($source)->values();
+        $values = Seq($source)->values();
         $this->assertInstanceOf(
-            P\Seq
+            Seq::class
             , $values
             , 'Seq->values should return an instance of itself'
         );
@@ -114,9 +106,9 @@ class SeqTest extends PHPixme_TestCase
      * @dataProvider arrayOfThingsProvider
      */
     public function test_keys($source) {
-        $keys = P\Seq($source)->keys();
+        $keys = Seq($source)->keys();
         $this->assertInstanceOf(
-            P\Seq
+            Seq::class
             , $keys
             , 'Seq->keys should return an instance of itself'
         );
@@ -132,7 +124,7 @@ class SeqTest extends PHPixme_TestCase
      */
     public function test_magic_invoke($value)
     {
-        $seq = P\Seq($value);
+        $seq = Seq($value);
 
         foreach ($value as $k => $v) {
             $this->assertTrue(
@@ -148,7 +140,7 @@ class SeqTest extends PHPixme_TestCase
      */
     public function test_map_callback($value)
     {
-        $seq = P\Seq($value);
+        $seq = Seq($value);
         $seq->map(function () use ($seq) {
             $this->assertTrue(
                 3 === func_num_args()
@@ -181,7 +173,7 @@ class SeqTest extends PHPixme_TestCase
         $id = function ($x) {
             return $x;
         };
-        $seq = P\Seq($value);
+        $seq = Seq($value);
         $result = $seq->map($id);
         $this->assertFalse(
             $seq === $result
@@ -201,7 +193,7 @@ class SeqTest extends PHPixme_TestCase
      */
     public function test_filter_callback($value)
     {
-        $seq = P\Seq($value);
+        $seq = Seq($value);
         $seq->filter(function () use ($seq) {
             $this->assertTrue(
                 3 === func_num_args()
@@ -232,7 +224,7 @@ class SeqTest extends PHPixme_TestCase
      */
     public function test_filter($value)
     {
-        $seq = P\Seq($value);
+        $seq = Seq($value);
         $tResult = $seq->filter(function () {
             return true;
         });
@@ -250,7 +242,7 @@ class SeqTest extends PHPixme_TestCase
             return false;
         });
         $this->assertEquals(
-            P\Seq([])
+            Seq([])
             , $fResult
             , 'Seq-filter callback false should contain no data'
         );
@@ -262,7 +254,7 @@ class SeqTest extends PHPixme_TestCase
      */
     function test_filterNot_callback($value)
     {
-        $seq = P\Seq($value);
+        $seq = Seq($value);
         $seq->filter(function () use ($seq) {
             $this->assertTrue(
                 3 === func_num_args()
@@ -293,7 +285,7 @@ class SeqTest extends PHPixme_TestCase
      */
     public function test_filterNot($value)
     {
-        $seq = P\Seq($value);
+        $seq = Seq($value);
         $tResult = $seq->filterNot(function () {
             return false;
         });
@@ -311,7 +303,7 @@ class SeqTest extends PHPixme_TestCase
             return true;
         });
         $this->assertEquals(
-            P\Seq([])
+            Seq([])
             , $fResult
             , 'Seq-filterNot callback true should contain no data'
         );
@@ -326,15 +318,15 @@ class SeqTest extends PHPixme_TestCase
                 , [1, 2, 3, 4, 5, 6]
             ]
             , 'array with some' => [
-                [P\Some(1), P\Some(2), P\Some(3)]
+                [Some(1), Some(2), Some(3)]
                 , [1, 2, 3]
             ]
             , 'Seq of Seq' => [
-                P\Seq::of(P\Seq::of(1, 2, 3), P\Seq::of(4, 5, 6))
+                Seq::of(Seq::of(1, 2, 3), Seq::of(4, 5, 6))
                 , [1, 2, 3, 4, 5, 6]
             ]
             , 'Seq of array' => [
-                P\seq::of([1, 2, 3], [4, 5, 6])
+                Seq::of([1, 2, 3], [4, 5, 6])
                 , [1, 2, 3, 4, 5, 6]
             ]
         ];
@@ -346,7 +338,7 @@ class SeqTest extends PHPixme_TestCase
      */
     public function test_flatMap_callback($value)
     {
-        $seq = P\Seq($value);
+        $seq = Seq($value);
         $seq->flatMap(function () use ($seq) {
             $this->assertTrue(
                 3 === func_num_args()
@@ -378,7 +370,7 @@ class SeqTest extends PHPixme_TestCase
      */
     public function test_flatMap_contract_broken()
     {
-        P\Seq::of(1, 2, 3)->flatMap(function () {
+        Seq::of(1, 2, 3)->flatMap(function () {
             return true;
         });
     }
@@ -394,7 +386,7 @@ class SeqTest extends PHPixme_TestCase
         };
         $this->assertEquals(
             $expected
-            , P\Seq::from($input)->flatMap($id)->toArray()
+            , Seq::from($input)->flatMap($id)->toArray()
             , 'Seq->flatMap applied with id should be functionally equivalent its merged array'
         );
     }
@@ -407,7 +399,7 @@ class SeqTest extends PHPixme_TestCase
     {
         $this->assertEquals(
             $expected
-            , P\Seq::from($input)->flatten()->toArray()
+            , Seq::from($input)->flatten()->toArray()
             , 'Seq->flatten should return a sequence that is functionally equivalent to a merged array'
         );
     }
@@ -418,7 +410,7 @@ class SeqTest extends PHPixme_TestCase
      */
     public function test_flatten_contract_broken()
     {
-        P\Seq::of(1, 2, 3)->flatten();
+        Seq::of(1, 2, 3)->flatten();
     }
 
     /**
@@ -427,7 +419,7 @@ class SeqTest extends PHPixme_TestCase
      */
     public function test_fold_callback($value)
     {
-        $seq = P\Seq($value);
+        $seq = Seq($value);
         $seq->fold(function () use ($seq) {
             $this->assertTrue(
                 4 === func_num_args()
@@ -462,8 +454,8 @@ class SeqTest extends PHPixme_TestCase
     public function foldAdditionProvider()
     {
         return [
-            'empty' => [P\Seq::from([]), 0]
-            , 'from 1 to 9' => [P\Seq::of(1, 2, 3, 4, 5, 6, 7, 8, 9), 45]
+            'empty' => [Seq::from([]), 0]
+            , 'from 1 to 9' => [Seq::of(1, 2, 3, 4, 5, 6, 7, 8, 9), 45]
         ];
     }
 
@@ -485,9 +477,9 @@ class SeqTest extends PHPixme_TestCase
     public function forAllProvider()
     {
         return [
-            'seq from 1 to 4' => [P\Seq::of(1, 2, 3, 4), true]
-            , 'seq from -2 to 2' => [P\Seq::of(-2, -1, 0, 1, 2), false]
-            , 'seq from -4 to -1' => [P\Seq::of(-4, -3, -2, -1), false]
+            'seq from 1 to 4' => [Seq::of(1, 2, 3, 4), true]
+            , 'seq from -2 to 2' => [Seq::of(-2, -1, 0, 1, 2), false]
+            , 'seq from -4 to -1' => [Seq::of(-4, -3, -2, -1), false]
         ];
     }
 
@@ -540,9 +532,9 @@ class SeqTest extends PHPixme_TestCase
     public function forNoneProvider()
     {
         return [
-            'seq from 1 to 4' => [P\Seq::of(1, 2, 3, 4), false]
-            , 'seq from -2 to 2' => [P\Seq::of(-2, -1, 0, 1, 2), false]
-            , 'seq from -4 to -1' => [P\Seq::of(-4, -3, -2, -1), true]
+            'seq from 1 to 4' => [Seq::of(1, 2, 3, 4), false]
+            , 'seq from -2 to 2' => [Seq::of(-2, -1, 0, 1, 2), false]
+            , 'seq from -4 to -1' => [Seq::of(-4, -3, -2, -1), true]
         ];
     }
 
@@ -594,9 +586,9 @@ class SeqTest extends PHPixme_TestCase
     public function forSomeProvider()
     {
         return [
-            'seq from 1 to 4' => [P\Seq::of(1, 2, 3, 4), true]
-            , 'seq from -2 to 2' => [P\Seq::of(-2, -1, 0, 1, 2), true]
-            , 'seq from -4 to -1' => [P\Seq::of(-4, -3, -2, -1), false]
+            'seq from 1 to 4' => [Seq::of(1, 2, 3, 4), true]
+            , 'seq from -2 to 2' => [Seq::of(-2, -1, 0, 1, 2), true]
+            , 'seq from -4 to -1' => [Seq::of(-4, -3, -2, -1), false]
         ];
     }
 
@@ -648,8 +640,8 @@ class SeqTest extends PHPixme_TestCase
     public function reduceAdditionProvider()
     {
         return [
-            'only zero' => [P\Seq::of(0), 0]
-            , 'from 1 to 9' => [P\Seq::of(1, 2, 3, 4, 5, 6, 7, 8, 9), 45]
+            'only zero' => [Seq::of(0), 0]
+            , 'from 1 to 9' => [Seq::of(1, 2, 3, 4, 5, 6, 7, 8, 9), 45]
         ];
     }
 
@@ -696,7 +688,7 @@ class SeqTest extends PHPixme_TestCase
      */
     public function test_reduce_contract_broken()
     {
-        P\Seq::of()->reduce(function () {
+        Seq::of()->reduce(function () {
             return true;
         });
     }
@@ -719,18 +711,18 @@ class SeqTest extends PHPixme_TestCase
     {
         return [
             'S[] with Some(1) and []' => [
-                P\Seq::of()
-                , [[], P\Some::of(1)]
-                , P\Seq::of(1)]
+                Seq::of()
+                , [[], Some::of(1)]
+                , Seq::of(1)]
             , 'S[1,2,3] with [4], S[5,6], and None' => [
-                P\Seq::of(1, 2, 3)
-                , [[4], P\Seq::of(5, 6), P\None()]
-                , P\Seq::of(1, 2, 3, 4, 5, 6)
+                Seq::of(1, 2, 3)
+                , [[4], Seq::of(5, 6), None()]
+                , Seq::of(1, 2, 3, 4, 5, 6)
             ]
             , 'S[None, Some(1)] with Some(1)' => [
-                P\Seq::of(P\None, P\Some(1))
-                , [P\None(), P\Some(2)]
-                , P\Seq::of(P\None, P\Some(1), 2)
+                Seq::of(None(), Some(1))
+                , [None(), Some(2)]
+                , Seq::of(None(), Some(1), 2)
             ]
         ];
 
@@ -752,14 +744,14 @@ class SeqTest extends PHPixme_TestCase
     {
         return [
             'find 1' => [
-                P\Seq::of(1, 2, 3)
+                Seq::of(1, 2, 3)
                 , 1
-                , P\Some(1)
+                , Some(1)
             ]
             , 'fail to find 4' => [
-                P\Seq::of(1, 2, 3)
+                Seq::of(1, 2, 3)
                 , 4
-                , P\None()
+                , None()
             ]
         ];
     }
@@ -812,10 +804,10 @@ class SeqTest extends PHPixme_TestCase
     {
         return [
             'from 1 to 9' => [
-                P\Seq::of(1, 2, 3, 4, 5, 6, 7, 8, 9), 9
+                Seq::of(1, 2, 3, 4, 5, 6, 7, 8, 9), 9
             ]
             , 'Nothing' => [
-                P\Seq::of(), 0
+                Seq::of(), 0
             ]
         ];
     }
@@ -870,11 +862,11 @@ class SeqTest extends PHPixme_TestCase
     {
         return [
             'keyless' => [
-                P\Seq::of(1, 2, 3)
+                Seq::of(1, 2, 3)
                 , 1
             ]
             , 'keyed' => [
-                P\Seq::from([
+                Seq::from([
                     'one' => 1
                     , 'two' => 2
                     , 'three' => 3
@@ -882,7 +874,7 @@ class SeqTest extends PHPixme_TestCase
                 , 1
             ]
             , 'empty' => [
-                P\Seq::of()
+                Seq::of()
                 , null
             ]
         ];
@@ -905,23 +897,23 @@ class SeqTest extends PHPixme_TestCase
     {
         return [
             'keyless' => [
-                P\Seq::of(1, 2, 3)
-                , P\Seq::of(2, 3)
+                Seq::of(1, 2, 3)
+                , Seq::of(2, 3)
             ]
             , 'keyed' => [
-                P\Seq::from([
+                Seq::from([
                     'one' => 1
                     , 'two' => 2
                     , 'three' => 3
                 ])
-                , P\Seq::from([
+                , Seq::from([
                     'two' => 2
                     , 'three' => 3
                 ])
             ]
             , 'empty' => [
-                P\Seq::of()
-                , P\Seq::of()
+                Seq::of()
+                , Seq::of()
             ]
         ];
     }
@@ -940,32 +932,32 @@ class SeqTest extends PHPixme_TestCase
 
     public function indexOfProvider()
     {
-        $none = P\None;
-        $some1 = P\Some(1);
+        $none = None();
+        $some1 = Some(1);
         $one = 1;
         return [
             'keyed source find None S[one=>1, none=>None, some=>Some(1) ]' => [
-                P\Seq::from(['one' => $one, 'none' => $none, 'some' => $some1])
+                Seq::from(['one' => $one, 'none' => $none, 'some' => $some1])
                 , $none
                 , 'none'
             ]
             , 'source find None S[1,None, Some(1)]' => [
-                P\Seq::of($one, $none, $some1)
+                Seq::of($one, $none, $some1)
                 , $none
                 , 1
             ]
             , 'source find Some(1) in S[1,2,Some(1),3]' => [
-                P\Seq::of(1, 2, $some1, 3)
+                Seq::of(1, 2, $some1, 3)
                 , $some1
                 , 2
             ]
             , 'fail to find Some(1) in S[1,2,3]' => [
-                P\Seq::of(1, 2, 3)
+                Seq::of(1, 2, 3)
                 , $some1
                 , -1
             ]
             , 'fail to find Some(1) in S[]' => [
-                P\Seq::of()
+                Seq::of()
                 , $some1
                 , -1
             ]
@@ -988,13 +980,13 @@ class SeqTest extends PHPixme_TestCase
     {
         return [
             'from 1 to 9 paritioned by odd (true) and even(false)' => [
-                P\Seq::of(1, 2, 3, 4, 5, 6, 7, 8, 9)
+                Seq::of(1, 2, 3, 4, 5, 6, 7, 8, 9)
                 , function ($value, $key) {
                     return ($key % 2) === 0;
                 }
-                , P\Seq::of(
-                    P\Seq::from([1 => 2, 3 => 4, 5 => 6, 7 => 8])
-                    , P\Seq::From([0 => 1, 2 => 3, 4 => 5, 6 => 7, 8 => 9])
+                , Seq::of(
+                    Seq::from([1 => 2, 3 => 4, 5 => 6, 7 => 8])
+                    , Seq::from([0 => 1, 2 => 3, 4 => 5, 6 => 7, 8 => 9])
                 )
             ]
         ];
@@ -1002,6 +994,7 @@ class SeqTest extends PHPixme_TestCase
 
     /**
      * @dataProvider partitionProvider
+     * @param Seq $seq
      */
     public function test_partition_callback($seq)
     {
@@ -1032,6 +1025,9 @@ class SeqTest extends PHPixme_TestCase
 
     /**
      * @dataProvider partitionProvider
+     * @param Seq $seq
+     * @param callable $hof
+     * @param $expected
      */
     public function test_partition($seq, $hof, $expected)
     {
@@ -1046,7 +1042,7 @@ class SeqTest extends PHPixme_TestCase
     {
         return [
             '' => [
-                P\Seq::of(1, '2', 3, P\Some(4), 5, '6', 7)
+                Seq::of(1, '2', 3, Some(4), 5, '6', 7)
                 , function ($value) {
                     if (is_string($value)) {
                         return 'string';
@@ -1059,10 +1055,10 @@ class SeqTest extends PHPixme_TestCase
                     }
                     return 'donno';
                 }
-                , P\Seq::from([
-                    'number' => P\Seq::from([0 => 1, 2 => 3, 4 => 5, 6 => 7])
-                    , 'string' => P\Seq::from([1 => '2', 5 => 6])
-                    , 'object' => P\Seq::from([3 => P\Some(4)])
+                , Seq::from([
+                    'number' => Seq::from([0 => 1, 2 => 3, 4 => 5, 6 => 7])
+                    , 'string' => Seq::from([1 => '2', 5 => 6])
+                    , 'object' => Seq::from([3 => Some(4)])
                 ])
             ]
         ];
@@ -1070,6 +1066,7 @@ class SeqTest extends PHPixme_TestCase
 
     /**
      * @dataProvider groupProvider
+     * @param Seq $seq
      */
     public function test_group_callback($seq)
     {
@@ -1100,6 +1097,9 @@ class SeqTest extends PHPixme_TestCase
 
     /**
      * @dataProvider groupProvider
+     * @param Seq $seq
+     * @param callable $hof
+     * @param $expected
      */
     public function test_group($seq, $hof, $expected)
     {
@@ -1114,27 +1114,30 @@ class SeqTest extends PHPixme_TestCase
     {
         return [
             'empty drop 5' => [
-                P\Seq::of()
+                Seq::of()
                 , 5
-                , P\Seq::of()
+                , Seq::of()
             ]
             , 'S[1,2,3,4] drop 3' => [
-                P\Seq::of(1, 2, 3, 4)
+                Seq::of(1, 2, 3, 4)
                 , 3
-                , P\Seq::from([3 => 4])
+                , Seq::from([3 => 4])
             ]
         ];
     }
 
     /**
      * @dataProvider dropProvider
+     * @param Seq $seq
+     * @param int $number
+     * @param $expected
      */
     public function test_drop($seq, $number, $expected)
     {
         $this->assertEquals(
             $expected
             , $seq->drop($number)
-            , 'Seq->drop of amount results are functionally equivilent to expected'
+            , 'Seq->drop of amount results are functionally equivalent to expected'
         );
     }
 
@@ -1142,20 +1145,23 @@ class SeqTest extends PHPixme_TestCase
     {
         return [
             'empty drop right 5' => [
-                P\Seq::of()
+                Seq::of()
                 , 5
-                , P\Seq::of()
+                , Seq::of()
             ]
             , 'S[1,2,3,4] drop right 3' => [
-                P\Seq::of(1, 2, 3, 4)
+                Seq::of(1, 2, 3, 4)
                 , 3
-                , P\Seq::from([0 => 1])
+                , Seq::from([0 => 1])
             ]
         ];
     }
 
     /**
      * @dataProvider dropRightProvider
+     * @param Seq $seq
+     * @param int $amount
+     * @param $expected
      */
     public function test_dropRight($seq, $amount, $expected)
     {
@@ -1170,16 +1176,19 @@ class SeqTest extends PHPixme_TestCase
     {
         return [
             'S[]->takeRight(5)' => [
-                P\Seq::of(), 5, P\Seq::of()
+                Seq::of(), 5, Seq::of()
             ]
             , 'S[1,2,3,4,5,6]->takeRight(2)' => [
-                P\Seq::of(1, 2, 3, 4, 5, 6), 2, P\Seq::from([0 => 1, 1 => 2])
+                Seq::of(1, 2, 3, 4, 5, 6), 2, Seq::from([0 => 1, 1 => 2])
             ]
         ];
     }
 
     /**
      * @dataProvider takeProvider
+     * @param Seq $seq
+     * @param int $amount
+     * @param $expected
      */
     public function test_take($seq, $amount, $expected)
     {
@@ -1194,16 +1203,19 @@ class SeqTest extends PHPixme_TestCase
     {
         return [
             'S[]->takeRight(5)' => [
-                P\Seq::of(), 5, P\Seq::of()
+                Seq::of(), 5, Seq::of()
             ]
             , 'S[1,2,3,4,5,6]->takeRight(2)' => [
-                P\Seq::of(1, 2, 3, 4, 5, 6), 2, P\Seq::from([4 => 5, 5 => 6])
+                Seq::of(1, 2, 3, 4, 5, 6), 2, Seq::from([4 => 5, 5 => 6])
             ]
         ];
     }
 
     /**
      * @dataProvider takeRightProvider
+     * @param Seq $seq
+     * @param $amount
+     * @param $expected
      */
     public function test_takeRight($seq, $amount, $expected)
     {
@@ -1233,7 +1245,7 @@ class SeqTest extends PHPixme_TestCase
     {
         $this->assertEquals(
             empty($source)
-            , P\Seq::from($source)->isEmpty()
+            , Seq::from($source)->isEmpty()
             , 'Seq->isEmpty should be true if the source was empty'
         );
     }
@@ -1245,7 +1257,7 @@ class SeqTest extends PHPixme_TestCase
     {
         $this->assertEquals(
             count($source)
-            , P\Seq::from($source)->count()
+            , Seq::from($source)->count()
             , 'Seq->count should be the amount of items that was sent to it'
         );
     }
@@ -1279,7 +1291,7 @@ class SeqTest extends PHPixme_TestCase
     {
         $this->assertEquals(
             implode($glue, $array)
-            , P\Seq::from($array)->toString($glue)
+            , Seq::from($array)->toString($glue)
         );
     }
 
@@ -1308,7 +1320,7 @@ class SeqTest extends PHPixme_TestCase
     {
         $this->assertEquals(
             json_encode($array)
-            , P\Seq::from($array)->toJson()
+            , Seq::from($array)->toJson()
             , 'Seq->toJson should be functionally equivalent to json_encode(Seq->toArray)'
         );
     }
@@ -1317,14 +1329,16 @@ class SeqTest extends PHPixme_TestCase
     {
         return [
             'S[1,2,3]' => [
-                P\Seq::of(1, 2, 3)
-                , P\Seq::from([2 => 3, 1 => 2, 0 => 1])
+                Seq::of(1, 2, 3)
+                , Seq::from([2 => 3, 1 => 2, 0 => 1])
             ]
         ];
     }
 
     /**
      * @dataProvider reverseProvider
+     * @param Seq $seq
+     * @param $expected
      */
     public function test_reverse($seq, $expected)
     {
@@ -1339,25 +1353,28 @@ class SeqTest extends PHPixme_TestCase
     {
         return [
             'S[1,2,3,4]' => [
-                P\Seq::of(1, 2, 3, 4)
+                Seq::of(1, 2, 3, 4)
                 , [0, 1, 2, 3]
                 , [1, 2, 3, 4]
             ]
             , 'S[1,2,3,4]->reverse()' => [
-                P\Seq::of(1, 2, 3, 4)->reverse()
+                Seq::of(1, 2, 3, 4)->reverse()
                 , [3, 2, 1, 0]
                 , [4, 3, 2, 1]
             ]
             , 'S[Some(1),Some(2)]' => [
-                P\Seq::of(P\Some(1), P\Some(2))
+                Seq::of(Some(1), Some(2))
                 , [0, 1]
-                , [P\Some(1), P\Some(2)]
+                , [Some(1), Some(2)]
             ]
         ];
     }
 
     /**
      * @dataProvider forEachProvider
+     * @param Seq $seq
+     * @param $keyR
+     * @param $valueR
      */
     public function test_forEach($seq, $keyR, $valueR)
     {

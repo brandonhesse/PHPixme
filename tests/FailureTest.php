@@ -1,35 +1,27 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rgladson
- * Date: 1/7/2016
- * Time: 4:03 PM
- */
 
-namespace tests\PHPixme;
-require_once "tests/PHPixme_TestCase.php";
-use PHPixme as P;
+namespace Phpixme;
 
 
-class FailureTest extends PHPixme_TestCase
+class FailureTest extends PhpixmeTestCase
 {
     public function test_failure_companion()
     {
         $this->assertStringEndsWith(
             '\Failure'
-            , P\Failure
+            , Failure::class
             , 'Ensure the constant ends with the function name'
         );
         $this->assertInstanceOf(
-            P\Failure
-            , P\Failure(new \Exception('Test Exception'))
+            Failure::class
+            , Failure(new \Exception('Test Exception'))
             , 'It should return failure instances'
         );
     }
 
     public function test_is_status()
     {
-        $failure = P\Failure(new \Exception('test'));
+        $failure = Failure(new \Exception('test'));
         $this->assertTrue(
             $failure->isFailure()
             , 'Failure->isFailure should be true'
@@ -46,13 +38,13 @@ class FailureTest extends PHPixme_TestCase
      */
     public function test_failure_get()
     {
-        P\Failure(new \Exception('Test Message'))->get();
+        Failure(new \Exception('Test Message'))->get();
     }
 
     public function test_getOrElse($default = 10)
     {
         $this->assertTrue(
-            $default === (P\Failure(new \Exception('Test'))->getOrElse($default))
+            $default === (Failure(new \Exception('Test'))->getOrElse($default))
             , 'Failure->getOrElse should return the default value'
         );
     }
@@ -60,8 +52,8 @@ class FailureTest extends PHPixme_TestCase
 
     public function test_orElse_scenario_substitute_success($value = '$yay')
     {
-        $failure = P\Failure(new \Exception('Test'));
-        $default = P\Success($value);
+        $failure = Failure(new \Exception('Test'));
+        $default = Success($value);
         $getDefault = function () use ($default) {
             return $default;
         };
@@ -73,8 +65,8 @@ class FailureTest extends PHPixme_TestCase
 
     public function test_orElse_scenario_substitute_failure()
     {
-        $default = P\Failure(new \Exception('Test2'));
-        $failure = P\Failure(new \Exception('Test1'));
+        $default = Failure(new \Exception('Test2'));
+        $failure = Failure(new \Exception('Test1'));
         $getDefault = function () use ($default) {
             return $default;
         };
@@ -90,13 +82,13 @@ class FailureTest extends PHPixme_TestCase
      */
     public function test_orElse_contract_broken()
     {
-        P\Failure(new \Exception('test'))->orElse(function () {
+        Failure(new \Exception('test'))->orElse(function () {
         });
     }
 
     public function test_filter()
     {
-        $failure = P\Failure(new \Exception('test'));
+        $failure = Failure(new \Exception('test'));
         $this->assertTrue(
             $failure === ($failure->filter(function () {
                 return true;
@@ -107,10 +99,10 @@ class FailureTest extends PHPixme_TestCase
 
     public function test_flatMap()
     {
-        $failure = P\Failure(new \Exception('test'));
+        $failure = Failure(new \Exception('test'));
         $this->assertTrue(
             $failure === ($failure->flatMap(function () {
-                return P\Success(true);
+                return Success(true);
             }))
             , 'Failure->flatMap is an identity'
         );
@@ -118,7 +110,7 @@ class FailureTest extends PHPixme_TestCase
 
     public function test_flatten()
     {
-        $failure = P\Failure(new \Exception('test'));
+        $failure = Failure(new \Exception('test'));
         $this->assertTrue(
             $failure === ($failure->flatten())
             , 'Failure->flatten is an identity'
@@ -128,10 +120,10 @@ class FailureTest extends PHPixme_TestCase
     public function test_failed()
     {
         $origErr = new \Exception('test');
-        $failure = P\Failure($origErr);
+        $failure = Failure($origErr);
         $success = $failure->failed();
         $this->assertInstanceOf(
-            P\Success
+            Success::class
             , $success
             , 'Failure->failed should result in a Success'
         );
@@ -143,7 +135,7 @@ class FailureTest extends PHPixme_TestCase
 
     public function test_map()
     {
-        $failure = P\Failure(new \Exception());
+        $failure = Failure(new \Exception());
         $this->assertTrue(
             $failure === ($failure->map(function () {
                 return 1;
@@ -156,7 +148,7 @@ class FailureTest extends PHPixme_TestCase
     public function test_recover_callback ()
     {
         $exc = new \Exception('test');
-        $failure = P\Failure($exc);
+        $failure = Failure($exc);
         $failure->recover(function () use ($exc, $failure) {
             $this->assertTrue(
                 2 === func_num_args()
@@ -179,13 +171,13 @@ class FailureTest extends PHPixme_TestCase
      */
     public function test_recover_success()
     {
-        $failure = P\Failure(new \Exception('test'));
+        $failure = Failure(new \Exception('test'));
 
         $results = $failure->recover(function () {
             return true;
         });
         $this->assertInstanceOf(
-            P\Success
+            Success::class
             , $results
             , 'Failure->recover callback who returns should be a success'
         );
@@ -200,14 +192,14 @@ class FailureTest extends PHPixme_TestCase
      */
     public function test_recover_failure()
     {
-        $failure = P\Failure(new \Exception('^_^'));
+        $failure = Failure(new \Exception('^_^'));
         $excTest = new \Exception('Test');
         $throwTest = function () use ($excTest) {
             throw $excTest;
         };
         $results = $failure->recover($throwTest);
         $this->assertInstanceOf(
-            P\Failure
+            Failure::class
             , $results
             , 'Failure->recover should result in a failure if the callback throws'
         );
@@ -222,7 +214,7 @@ class FailureTest extends PHPixme_TestCase
     {
 
         $exc = new \Exception('test');
-        $failure = P\Failure($exc);
+        $failure = Failure($exc);
         $failure->recover(function () use ($exc, $failure) {
             $this->assertTrue(
                 2 === func_num_args()
@@ -245,29 +237,29 @@ class FailureTest extends PHPixme_TestCase
      */
     public function test_recoverWith_contract_broken()
     {
-        P\Failure(new \Exception('test'))
+        Failure(new \Exception('test'))
             ->recoverWith(function () {
                 return '^_^';
             });
     }
 
     public function test_recoverWith_success($value = true) {
-        $success = P\Success($value);
+        $success = Success($value);
         $determination = function () use ($success) {
             return $success;
         };
-        $results = P\Failure(new \Exception('Test'))->recoverWith($determination);
+        $results = Failure(new \Exception('Test'))->recoverWith($determination);
         $this->assertTrue(
             $results === $success
             , 'Failure->recoverWith should be able to recoverWith a Success value'
         );
     }
     public function test_recoverWith_failure() {
-        $failure = P\Failure(new \Exception('^_^'));
+        $failure = Failure(new \Exception('^_^'));
         $failRecover = function () use ($failure) {
             return $failure;
         };
-        $results = P\Failure(new \Exception('Test'))->recoverWith($failRecover);
+        $results = Failure(new \Exception('Test'))->recoverWith($failRecover);
         $this->assertTrue(
             $results === $failure
             , 'Failure->recoverWith should be able to recoverWith a Failure value'
@@ -278,7 +270,7 @@ class FailureTest extends PHPixme_TestCase
     public function test_toArray()
     {
         $err = new \Exception('test');
-        $result = P\Failure($err)->toArray();
+        $result = Failure($err)->toArray();
         $this->assertTrue(
             is_array($result)
             , 'Failure->toArray should result in array'
@@ -296,8 +288,8 @@ class FailureTest extends PHPixme_TestCase
     public function test_toMaybe()
     {
         $this->assertInstanceOf(
-            P\None
-            , P\Failure(new \Exception('test'))->toMaybe()
+            None::class
+            , Failure(new \Exception('test'))->toMaybe()
             , 'Failure->toMaybe should result in None'
         );
     }
@@ -305,8 +297,8 @@ class FailureTest extends PHPixme_TestCase
     public function test_transform_callback($value = 'test')
     {
         $exc = new \Exception($value);
-        $fail = P\Failure($exc);
-        P\Failure(new \Exception($value))->transform(function () {
+        $fail = Failure($exc);
+        Failure(new \Exception($value))->transform(function () {
             throw new \Exception('This should not be run!');
         }, function () use ($exc, $fail) {
             $this->assertTrue(
@@ -327,13 +319,13 @@ class FailureTest extends PHPixme_TestCase
 
     public function test_transform_scenario_to_success($value = 'test')
     {
-        $fail = P\Failure(new \Exception($value));
+        $fail = Failure(new \Exception($value));
         $this->assertTrue(
             $value === ($fail->transform(
                 function () {
                 },
                 function ($value) {
-                    return P\Success($value->getMessage());
+                    return Success($value->getMessage());
                 }
             )->get())
             , 'Failure->transform through the failure callback can become a Success'
@@ -342,8 +334,8 @@ class FailureTest extends PHPixme_TestCase
 
     public function test_transform_scenario_to_failure()
     {
-        $fail = P\Failure(new \Exception('Test'));
-        $secondFailure = P\Failure(new \Exception('Test'));
+        $fail = Failure(new \Exception('Test'));
+        $secondFailure = Failure(new \Exception('Test'));
         $this->assertTrue(
             $secondFailure === ($fail->transform(
                 function () {
@@ -363,7 +355,7 @@ class FailureTest extends PHPixme_TestCase
     {
         $bad = function () {
         };
-        P\Failure(new \Exception())->transform($bad, $bad);
+        Failure(new \Exception())->transform($bad, $bad);
     }
 
     public function test_walk()
@@ -371,6 +363,6 @@ class FailureTest extends PHPixme_TestCase
         $notRun = function () {
             throw new \Exception('Failure->walk callback should not be run!');
         };
-        P\Failure(new \Exception())->walk($notRun);
+        Failure(new \Exception())->walk($notRun);
     }
 }

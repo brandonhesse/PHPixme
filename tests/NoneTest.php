@@ -1,28 +1,20 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rgladson
- * Date: 1/8/2016
- * Time: 1:18 PM
- */
 
-namespace tests\PHPixme;
-require_once "tests/PHPixme_TestCase.php";
-use PHPixme as P;
+namespace Phpixme;
 
-class NoneTest extends PHPixme_TestCase
+class NoneTest extends PhpixmeTestCase
 {
     public function test_None_companion()
     {
 
         $this->assertStringEndsWith(
             '\None'
-            , P\None
+            , None::class
             , 'Ensure the constant ends with the function/class name'
         );
         $this->assertInstanceOf(
-            P\None
-            , P\None()
+            None::class
+            , None()
             , 'It should return an instance of none'
         );
     }
@@ -30,7 +22,7 @@ class NoneTest extends PHPixme_TestCase
     public function test_None_aspect_Singleton()
     {
         $this->assertTrue(
-            P\None() === P\None()
+            None() === None()
             , 'None should be a singleton'
         );
     }
@@ -38,8 +30,8 @@ class NoneTest extends PHPixme_TestCase
     public function test_None_static_getInstance()
     {
         $this->assertInstanceOf(
-            P\None,
-            P\None::getInstance()
+            None::class
+            , None::getInstance()
             , 'Get Instance should return its instance of itself'
         );
     }
@@ -48,7 +40,7 @@ class NoneTest extends PHPixme_TestCase
     {
         $this->assertInstanceOf(
             '\Traversable'
-            , P\None()
+            , None()
             , 'None should be a traversable'
         );
     }
@@ -56,8 +48,8 @@ class NoneTest extends PHPixme_TestCase
     public function test_None_aspects_Natural_Transformation()
     {
         $this->assertInstanceOf(
-            'PHPixme\NaturalTransformationInterface'
-            , P\None()
+            'Phpixme\NaturalTransformationInterface'
+            , None()
             , 'It should have implemented natural transformations'
         );
     }
@@ -65,7 +57,7 @@ class NoneTest extends PHPixme_TestCase
     public function test_static_of()
     {
         $this->assertTrue(
-            P\None() === (P\None::of($this))
+            None() === (None::of($this))
             , 'Of on None is its singleton'
         );
     }
@@ -73,7 +65,7 @@ class NoneTest extends PHPixme_TestCase
     public function test_static_from()
     {
         $this->assertTrue(
-            P\None() === (P\None::from([$this]))
+            None() === (None::from([$this]))
             , 'From on None is its singleton'
         );
 
@@ -82,7 +74,7 @@ class NoneTest extends PHPixme_TestCase
     public function test_contains()
     {
         $this->assertFalse(
-            P\None()->contains(1)
+            None()->contains(1)
             , 'None should contain nothing'
         );
     }
@@ -90,7 +82,7 @@ class NoneTest extends PHPixme_TestCase
     public function test_exists()
     {
         $this->assertFalse(
-            P\None()->exists(
+            None()->exists(
                 function () {
                     throw new \Exception('The callback should not run');
                 }
@@ -101,7 +93,7 @@ class NoneTest extends PHPixme_TestCase
     public function test_forAll()
     {
         $this->assertTrue(
-            P\None()->forAll(function () {
+            None()->forAll(function () {
                 throw new \Exception('The callback should not run');
             })
             , 'The result of forAll on None should be true'
@@ -113,13 +105,13 @@ class NoneTest extends PHPixme_TestCase
      */
     public function test_get()
     {
-        P\None()->get();
+        None()->get();
     }
 
     public function test_getOrElse()
     {
         $this->assertTrue(
-            P\None()->getOrElse(true)
+            None()->getOrElse(true)
             , 'None should return getOrElse default'
         );
     }
@@ -127,7 +119,7 @@ class NoneTest extends PHPixme_TestCase
     public function test_isDefined()
     {
         $this->assertFalse(
-            P\None()->isDefined()
+            None()->isDefined()
             , 'None is not considered defined'
         );
     }
@@ -135,19 +127,19 @@ class NoneTest extends PHPixme_TestCase
     public function test_orNull()
     {
         $this->assertNull(
-            P\None()->orNull()
+            None()->orNull()
             , 'orNull should be Null on None'
         );
     }
 
     public function test_orElse()
     {
-        $results = P\Maybe(10);
+        $results = Maybe(10);
         $getResults = function () use ($results) {
             return $results;
         };
         $this->assertTrue(
-            $results === (P\None()->orElse($getResults))
+            $results === (None()->orElse($getResults))
             , 'orElse on None should use the default HoF'
         );
     }
@@ -158,15 +150,15 @@ class NoneTest extends PHPixme_TestCase
      */
     public function test_orElse_contract_broken()
     {
-        P\None()->orElse(function () {
+        None()->orElse(function () {
         });
     }
 
     public function test_toSeq()
     {
         $this->assertInstanceOf(
-            P\Seq
-            , P\None()->toSeq()
+            Seq::class
+            , None()->toSeq()
             , 'toSeq should produce a Sequence Type'
         );
     }
@@ -176,7 +168,7 @@ class NoneTest extends PHPixme_TestCase
      */
     public function test_reduce()
     {
-        P\None()->reduce(function () {
+        None()->reduce(function () {
         });
     }
 
@@ -184,7 +176,7 @@ class NoneTest extends PHPixme_TestCase
     {
         $startVal = true;
         $this->assertTrue(
-            $startVal === (P\None()->fold(function () {
+            $startVal === (None()->fold(function () {
                 throw new \Exception('This should not run!');
             }, $startVal))
             , 'Folds on empty collections should return start values'
@@ -193,7 +185,7 @@ class NoneTest extends PHPixme_TestCase
 
     public function test_map()
     {
-        $none = P\None();
+        $none = None();
         $this->assertTrue(
             $none === ($none->map(function () {
                 throw new \Exception('This should not run!');
@@ -204,7 +196,7 @@ class NoneTest extends PHPixme_TestCase
 
     public function filter()
     {
-        $none = P\None();
+        $none = None();
         $this->assertTrue(
             $none === ($none->filter(function () {
                 throw new \Exception('This should not run!');
@@ -215,7 +207,7 @@ class NoneTest extends PHPixme_TestCase
 
     public function test_filterNot()
     {
-        $none = P\None();
+        $none = None();
         $this->assertTrue(
             $none === ($none->filterNot(function () {
                 throw new \Exception('This should not run!');
@@ -227,7 +219,7 @@ class NoneTest extends PHPixme_TestCase
     function test_walk()
     {
         $times = 0;
-        P\None()->walk(function () use (&$times) {
+        None()->walk(function () use (&$times) {
             $times += 1;
         });
         $this->assertTrue(
@@ -238,7 +230,7 @@ class NoneTest extends PHPixme_TestCase
 
     function test_toArray()
     {
-        $arr = P\None()->toArray();
+        $arr = None()->toArray();
         $this->assertTrue(
             is_array($arr)
             , 'The value produced by None->toArray should be an array'
@@ -252,7 +244,7 @@ class NoneTest extends PHPixme_TestCase
     function test_isEmpty()
     {
         $this->assertTrue(
-            P\None()->isEmpty()
+            None()->isEmpty()
             , 'None should be empty'
         );
     }
@@ -260,8 +252,8 @@ class NoneTest extends PHPixme_TestCase
     function test_find()
     {
         $this->assertInstanceOf(
-            P\None
-            , P\None()->find(function () {
+            None::class
+            , None()->find(function () {
             throw new \Exception('This should never run!');
         })
             , 'Find on none should be an identity'
@@ -272,7 +264,7 @@ class NoneTest extends PHPixme_TestCase
     {
         // time to test if the interface works
         $times = 0;
-        foreach (P\None() as $key => $value) {
+        foreach (None() as $key => $value) {
             $times += 1;
         }
         $this->assertTrue(
@@ -285,7 +277,7 @@ class NoneTest extends PHPixme_TestCase
     {
         $this->assertEquals(
             0
-            , P\None()->count()
+            , None()->count()
             , 'None->count should always equal 0'
         );
     }

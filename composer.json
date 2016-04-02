@@ -11,16 +11,19 @@
   ],
   "autoload": {
     "files": [
-      "src/PHPixme/functional.php",
-      "src/PHPixme/companionsAttempt.php",
-      "src/PHPixme/companionsMaybe.php",
-      "src/PHPixme/companionsSeq.php"
+      "library/functional.php",
+      "library/companion.php"
     ],
     "psr-4": {
-      "PHPixme\\": "src/PHPixme"
+      "Phpixme\\": "library"
     }
   },
   "require-dev": {
     "phpunit/phpunit": "5.1.*"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Phpixme\\": "tests"
+    }
   }
 }

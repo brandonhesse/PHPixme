@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rgladson
- * Date: 1/6/2016
- * Time: 11:09 AM
- */
 
-namespace PHPixme;
+namespace Phpixme;
 
 /**
  * Class Failure
@@ -18,6 +12,14 @@ namespace PHPixme;
 class Failure extends Attempt
 {
     private $err;
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct(\Exception $exception)
+    {
+        $this->err = $exception;
+    }
 
     /**
      * @inheritdoc
@@ -118,20 +120,13 @@ class Failure extends Attempt
         }
         return __assertAttemptType($result);
     }
+
     /**
      * @inheritdoc
      */
     public function walk(callable $hof)
     {
         // This space is intentionally left blank.
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function __construct(\Exception $exception)
-    {
-        $this->err = $exception;
     }
 
 }

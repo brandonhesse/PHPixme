@@ -10,9 +10,7 @@
  * Date: 12/30/2015
  * Time: 10:33 AM
  */
-require __DIR__ . '/vendor/autoload.php';
-use PHPixme as P;
-const BR = '<br/>' . PHP_EOL;
+require __DIR__ . '/bootstrap.php';
 const testData = [1, 2, 4, 8, 16];
 $jsonTestData = json_encode(testData);
 $testFn = function (...$args) {
@@ -26,12 +24,12 @@ $timesTwo = function ($value) {
 $stringify = function ($value) {
     return "'$value'";
 };
-$curry2 = P\curry(2);
-$quaternary = P\nAry(4);
-$map = P\binary('array_map');
+$curry2 = curry(2);
+$quaternary = nAry(4);
+$map = binary('array_map');
 $mapX2 = $map($timesTwo);
-$joinComma = P\binary('implode')->__invoke(', ');
-$makeView = P\combine($stringify, $timesTwo);
+$joinComma = binary('implode')->__invoke(', ');
+$makeView = combine($stringify, $timesTwo);
 ?>
 <h1>Time to fix PHP!</h1>
 <p>
@@ -52,7 +50,7 @@ $makeView = P\combine($stringify, $timesTwo);
     <h2>Testing Unary</h2>
     <p>
         <?php
-        $output = call_user_func_array(P\unary($testFn), testData)
+        $output = call_user_func_array(unary($testFn), testData)
         ?>
         Unary returned: <?= $output ?>
 
@@ -81,7 +79,7 @@ $makeView = P\combine($stringify, $timesTwo);
     <h2>Again, but now using fold to produce the join!</h2>
     <p>
         <?= $jsonTestData ?> &mdash;map($makeView)&mdash;fold&rightarrow;
-        <?= P\fold(function ($output, $value) {
+        <?= fold(function ($output, $value) {
             return $output ? "$output, $value" : $value;
         }, '', $map($makeView, testData)) ?>
     </p>
@@ -90,7 +88,7 @@ $makeView = P\combine($stringify, $timesTwo);
     <h2>Again, but now using reduce to produce the join!</h2>
     <p>
         <?= $jsonTestData ?> &mdash;map($makeView)&mdash;reduce&rightarrow;
-        <?= P\reduce(function ($output, $value) {
+        <?= reduce(function ($output, $value) {
             return "$output, $value";
         }, $map($makeView, testData)) ?>
     </p>
@@ -100,7 +98,7 @@ $makeView = P\combine($stringify, $timesTwo);
     <p>
         <?= $jsonTestData ?> &mdash;map2x&mdash;filterWith(_ mod 8 = 0)&mdash;values&rightarrow;
         <?= json_encode(array_values(
-            P\flip('array_filter')
+            flip('array_filter')
                 ->__invoke(function ($value) {
                     return $value % 8 === 0;
                 })
@@ -115,8 +113,8 @@ $makeView = P\combine($stringify, $timesTwo);
     </p>
     <ul>
         <?php
-        $keyPairs = P\flip(
-            P\binary('array_walk')
+        $keyPairs = flip(
+            binary('array_walk')
         )->__invoke(
             function ($value, $key) {
                 echo "<li>$key &DoubleRightArrow; $value</li>" . PHP_EOL;
@@ -127,11 +125,11 @@ $makeView = P\combine($stringify, $timesTwo);
     </ul>
 </section>
 <section>
-    <h2>Thrill as I convert this Hash Array to an array of Tupples!</h2>
+    <h2>Thrill as I convert this Hash Array to an array of Tuples!</h2>
     <p>
         <?php
-        $tupleMaker = P\S(
-            P\ternary('array_map')
+        $tupleMaker = S(
+            ternary('array_map')
                 ->__invoke(
                     function ($val, $key) {
                         return [$key, $val];
@@ -147,13 +145,15 @@ $makeView = P\combine($stringify, $timesTwo);
     <p>And to show why I picked these numbers</p>
     <ul>
         <?php
-        P\flip(
-            P\binary('array_walk')
+        flip(
+            binary('array_walk')
         )->__invoke(function ($tuple) {
             echo "<li>2<sup>$tuple[0]</sup> = $tuple[1]</li>" . PHP_EOL;
         }, $testDataAsTuple);
         ?>
     </ul>
+    <p>Time taken: <?= microtime(true) - $start; ?> seconds.</p>
+    <p>Peak Mem Usage: <?= memory_get_peak_usage(false) / 1024 / 1024; ?> MiB, Max This Script: <?= memory_get_peak_usage(true) / 1024 / 1024; ?> MiB</p>
 </section>
 </body>
 </html>

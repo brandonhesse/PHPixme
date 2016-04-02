@@ -1,14 +1,11 @@
 <?php
+
+namespace Phpixme;
+
 /**
- * Created by PhpStorm.
- * User: rgladson
- * Date: 1/4/2016
- * Time: 9:44 AM
+ * Class Seq
+ * @package Phpixme
  */
-
-namespace PHPixme;
-
-
 class Seq implements NaturalTransformationInterface, \Countable
 {
     private $hash = [];
@@ -35,7 +32,7 @@ class Seq implements NaturalTransformationInterface, \Countable
         if ($arrayLike instanceof NaturalTransformationInterface) {
             return $arrayLike->toArray();
         }
-        __assertTraversable($arrayLike);
+        Assert::isTraversable($arrayLike);
         if (is_array($arrayLike)) {
             return $arrayLike;
         }
@@ -220,7 +217,7 @@ class Seq implements NaturalTransformationInterface, \Countable
 
     public function partition($hof)
     {
-        __assertCallable($hof);
+        Assert::isCallable($hof);
         $true = [];
         $false = [];
         foreach ($this->hash as $key => $value) {
@@ -235,7 +232,7 @@ class Seq implements NaturalTransformationInterface, \Countable
 
     public function group($hof)
     {
-        __assertCallable($hof);
+        Assert::isCallable($hof);
         return static::from(
             map(
                 function ($value) {

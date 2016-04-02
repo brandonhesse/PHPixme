@@ -1,48 +1,40 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rgladson
- * Date: 1/8/2016
- * Time: 3:11 PM
- */
-namespace tests\PHPixme;
-require_once "tests/PHPixme_TestCase.php";
-use PHPixme as P;
+namespace Phpixme;
 
-class SomeTest extends PHPixme_TestCase
+class SomeTest extends PhpixmeTestCase
 {
     public function test_Some_companion($value = true)
     {
         $this->assertStringEndsWith(
             '\Some'
-            , P\Some
+            , Some::class
             , 'Ensure the constant ends with the function/class name'
         );
         $this->assertInstanceOf(
-            P\Some,
-            P\Some($value)
+            Some::class,
+            Some($value)
         );
     }
 
     public function test_Some_static_of($value = true)
     {
         $this->assertInstanceOf(
-            P\Some,
-            P\Some::of($value)
+            Some::class,
+            Some::of($value)
         );
     }
 
     public function test_Some_static_from($value = [true])
     {
         $this->assertInstanceOf(
-            P\Some,
-            P\Some::from($value)
+            Some::class,
+            Some::from($value)
         );
     }
 
     public function test_contains($value = true, $notValue = false)
     {
-        $some = P\Some($value);
+        $some = Some($value);
         $this->assertTrue(
             $some->contains($value)
             , 'Some->contains should contain the value'
@@ -61,7 +53,7 @@ class SomeTest extends PHPixme_TestCase
         $getNotValue = function ($x) use ($value) {
             return $x !== $value;
         };
-        $some = P\Some($value);
+        $some = Some($value);
         $this->assertTrue(
             $some->exists($getValue)
             , 'Some->exists should return true if the predicate returned true'
@@ -75,7 +67,7 @@ class SomeTest extends PHPixme_TestCase
     public function test_get($value = true)
     {
         $this->assertTrue(
-            $value === (P\Some($value)->get())
+            $value === (Some($value)->get())
             , 'Some->get should return its contents'
         );
     }
@@ -83,7 +75,7 @@ class SomeTest extends PHPixme_TestCase
     public function test_getOrElse($value = true, $default = false)
     {
         $this->assertTrue(
-            $value === (P\Some($value)->getOrElse($default))
+            $value === (Some($value)->getOrElse($default))
             , 'Some->getOrElse should return its contents and ignore the default'
         );
     }
@@ -91,14 +83,14 @@ class SomeTest extends PHPixme_TestCase
     public function test_isDefined($value = true)
     {
         $this->assertTrue(
-            P\Some($value)->isDefined()
+            Some($value)->isDefined()
             , 'Some->isDefined should return true'
         );
     }
 
     public function test_orNull($value = true)
     {
-        $contained = P\Some($value)->orNull();
+        $contained = Some($value)->orNull();
         if (is_null($value)) {
             $this->assertNull(
                 $contained
@@ -114,7 +106,7 @@ class SomeTest extends PHPixme_TestCase
 
     public function test_orElse($value = true)
     {
-        $some = P\Some($value);
+        $some = Some($value);
         $this->assertTrue(
             $some === ($some->orElse(function () {
                 throw new \Exception('Some->orElse callback should never run');
@@ -126,8 +118,8 @@ class SomeTest extends PHPixme_TestCase
     public function test_toSeq($value = true)
     {
         $this->assertInstanceOf(
-            P\Seq
-            , P\Some($value)->toSeq()
+            Seq::class
+            , Some($value)->toSeq()
             , 'Some->toSeq should produce a Sequence'
         );
     }
@@ -135,7 +127,7 @@ class SomeTest extends PHPixme_TestCase
 
     public function test_fold_callback($value = true, $startValue = null)
     {
-        $some = P\Some($value);
+        $some = Some($value);
         $some->fold(function ($lastVal) use ($startValue, $value, $some) {
             $this->assertTrue(
                 4 === func_num_args()
@@ -168,7 +160,7 @@ class SomeTest extends PHPixme_TestCase
             return $x + $y;
         };
         $this->assertTrue(
-            ($value + $startVal) === (P\Some($value)->fold($add, $startVal))
+            ($value + $startVal) === (Some($value)->fold($add, $startVal))
             , 'The fold should be able to preform a simple add on a single length item'
         );
     }
@@ -176,7 +168,7 @@ class SomeTest extends PHPixme_TestCase
     public function test_reduce($value = true)
     {
         $this->assertTrue(
-            $value === (P\Some($value)->reduce(function () {
+            $value === (Some($value)->reduce(function () {
                 throw new \Exception('Some->reduce callback should never run!');
             }))
             , 'Some->reduce should produce its contents'
@@ -185,7 +177,7 @@ class SomeTest extends PHPixme_TestCase
 
     public function test_map_callback($value = true)
     {
-        $some = P\Some($value);
+        $some = Some($value);
         $some->map(function () use ($value, $some) {
             $this->assertTrue(
                 func_num_args() === 3
@@ -208,12 +200,12 @@ class SomeTest extends PHPixme_TestCase
 
     public function test_map($value = true)
     {
-        $original = P\Some($value);
+        $original = Some($value);
         $duplicate = $original->map(function ($value) {
             return $value;
         });
         $this->assertInstanceOf(
-            P\Some
+            Some::class
             , $duplicate
             , 'Some->map function should remain a Some'
         );
@@ -225,7 +217,7 @@ class SomeTest extends PHPixme_TestCase
 
     public function test_flatMap_callback($value = true)
     {
-        $some = P\Some($value);
+        $some = Some($value);
         $some->flatMap(function () use ($value, $some) {
             $this->assertTrue(
                 func_num_args() === 3
@@ -243,7 +235,7 @@ class SomeTest extends PHPixme_TestCase
                 func_get_arg(2) === $some
                 , 'Some->flatMap callback $container should be itself'
             );
-            return P\Some($value);
+            return Some($value);
         });
     }
 
@@ -253,15 +245,15 @@ class SomeTest extends PHPixme_TestCase
      */
     public function test_flatMap_contract_broken($value = true)
     {
-        P\Some($value)->flatMap(function ($value) {
+        Some($value)->flatMap(function ($value) {
             return $value;
         });
     }
 
     public function test_flatMap($value = true)
     {
-        $some2 = P\Maybe($value);
-        $some1 = P\Some($some2);
+        $some2 = Maybe($value);
+        $some1 = Some($some2);
 
         $this->assertTrue(
             $some2 === ($some1->flatMap(function ($value) {
@@ -273,8 +265,8 @@ class SomeTest extends PHPixme_TestCase
 
     public function test_flatten($value = true)
     {
-        $some2 = P\Maybe($value);
-        $some1 = P\Some($some2);
+        $some2 = Maybe($value);
+        $some1 = Some($some2);
         $this->assertTrue(
             ($some1->flatten()) === $some2
             , 'Some->flatten should return its contents of Maybe'
@@ -286,12 +278,12 @@ class SomeTest extends PHPixme_TestCase
      */
     public function test_flatten_contract_broken()
     {
-        P\Some(true)->flatten();
+        Some(true)->flatten();
     }
 
     public function test_filter_callback($value = true)
     {
-        $some = P\Some($value);
+        $some = Some($value);
         $some->filter(function () use ($value, $some) {
             $this->assertTrue(
                 func_num_args() === 3
@@ -313,9 +305,9 @@ class SomeTest extends PHPixme_TestCase
         });
     }
 
-    public function test_filter_scenario_isArray($value = true, $expected = P\None)
+    public function test_filter_scenario_isArray($value = true, $expected = None::class)
     {
-        $some = P\Some($value);
+        $some = Some($value);
         $results = $some->filter(function ($val) {
             return is_array($val);
         });
@@ -324,7 +316,7 @@ class SomeTest extends PHPixme_TestCase
             , $results
             , 'Some->filter application of is_array on ' . json_encode($value) . ' should of been ' . json_encode($expected)
         );
-        if ($expected === P\Some) {
+        if ($expected === Some::class) {
             $this->assertTrue(
                 $some === $results
                 , 'Some->filter where callback results are true is an identity'
@@ -334,7 +326,7 @@ class SomeTest extends PHPixme_TestCase
 
     public function test_filterNot_callback($value = true)
     {
-        $some = P\Some($value);
+        $some = Some($value);
         $some->filterNot(function () use ($value, $some) {
             $this->assertTrue(
                 func_num_args() === 3
@@ -356,9 +348,9 @@ class SomeTest extends PHPixme_TestCase
         });
     }
 
-    public function test_filterNot_scenario_isArray($value = true, $expected = P\Some)
+    public function test_filterNot_scenario_isArray($value = true, $expected = Some::class)
     {
-        $some = P\Some($value);
+        $some = Some($value);
         $results = $some->filterNot(function ($val) {
             return is_array($val);
         });
@@ -367,7 +359,7 @@ class SomeTest extends PHPixme_TestCase
             , $results
             , 'Some->filterNot application of is_array on ' . json_encode($value) . ' should of been ' . json_encode($expected)
         );
-        if ($expected === P\Some) {
+        if ($expected === Some::class) {
             $this->assertTrue(
                 $some === $results
                 , 'Some->filterNot callback is unsuccessful, the result is an identity'
@@ -377,7 +369,7 @@ class SomeTest extends PHPixme_TestCase
 
     public function test_forAll_callback($value = true)
     {
-        $some = P\Some($value);
+        $some = Some($value);
         $some->forAll(function () use ($value, $some) {
             $this->assertTrue(
                 func_num_args() === 3
@@ -405,14 +397,14 @@ class SomeTest extends PHPixme_TestCase
             return is_array($value);
         };
         $this->assertTrue(
-            $expected === P\Some($value)->forAll($isArray)
+            $expected === Some($value)->forAll($isArray)
             , 'Some->forAll application of is_array on ' . json_encode($value) . ' should of been ' . json_encode($expected)
         );
     }
 
     public function test_forNone_callback($value = true)
     {
-        $some = P\Some($value);
+        $some = Some($value);
         $some->forNone(function () use ($value, $some) {
             $this->assertTrue(
                 func_num_args() === 3
@@ -440,14 +432,14 @@ class SomeTest extends PHPixme_TestCase
             return is_array($value);
         };
         $this->assertTrue(
-            $expected === P\Some($value)->forNone($isArray)
+            $expected === Some($value)->forNone($isArray)
             , 'Some->forNone application of is_array on ' . json_encode($value) . ' should of been ' . json_encode($expected)
         );
     }
 
     public function test_forSome_callback($value = true)
     {
-        $some = P\Some($value);
+        $some = Some($value);
         $some->forSome(function () use ($value, $some) {
             $this->assertTrue(
                 func_num_args() === 3
@@ -475,14 +467,14 @@ class SomeTest extends PHPixme_TestCase
             return is_array($value);
         };
         $this->assertTrue(
-            $expected === P\Some($value)->forSome($isArray)
+            $expected === Some($value)->forSome($isArray)
             , 'Some->forSome application of is_array on ' . json_encode($value) . ' should of been ' . json_encode($expected)
         );
     }
 
     public function test_walk_callback($value = true)
     {
-        $some = P\Some($value);
+        $some = Some($value);
         $some->forSome(function () use ($value, $some) {
             $this->assertTrue(
                 func_num_args() === 3
@@ -505,7 +497,7 @@ class SomeTest extends PHPixme_TestCase
 
     public function test_toArray($value = true)
     {
-        $arr = P\Some($value)->toArray();
+        $arr = Some($value)->toArray();
         $this->assertTrue(
             is_array($arr)
             , 'Some->toArray should yield an array'
@@ -522,7 +514,7 @@ class SomeTest extends PHPixme_TestCase
 
     public function test_find_callback($value = true)
     {
-        $some = P\Some($value);
+        $some = Some($value);
         $some->find(function () use ($value, $some) {
             $this->assertTrue(
                 func_num_args() === 3
@@ -546,7 +538,7 @@ class SomeTest extends PHPixme_TestCase
 
     public function test_find($value = true)
     {
-        $some = P\Some($value);
+        $some = Some($value);
         $positiveResult = $some->find(function ($x) use ($value) {
             return $x === $value;
         });
@@ -555,7 +547,7 @@ class SomeTest extends PHPixme_TestCase
         });
 
         $this->assertInstanceOf(
-            P\Some
+            Some::class
             , $positiveResult
             , 'Some->Find on a true callback should return a Some'
         );
@@ -564,7 +556,7 @@ class SomeTest extends PHPixme_TestCase
             , 'Some->find on a truly returning callback should yield an identity'
         );
         $this->assertInstanceOf(
-            P\None
+            None::class
             , $negativeResult
             , 'Some->find a falsely returning callback yields a None'
         );
@@ -573,7 +565,7 @@ class SomeTest extends PHPixme_TestCase
 
     function test_forEach($value = true)
     {
-        $iter = P\Some($value);
+        $iter = Some($value);
         $run = 0;
         foreach ($iter as $key => $val) {
             $run += 1;
@@ -593,7 +585,7 @@ class SomeTest extends PHPixme_TestCase
     {
         $this->assertEquals(
             1
-            , P\Some($value)->count()
+            , Some($value)->count()
             , 'Some->count should always equal 1'
         );
     }

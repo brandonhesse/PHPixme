@@ -1,17 +1,13 @@
 <?php
+
+namespace Phpixme;
+
 /**
- * Created by PhpStorm.
- * User: rgladson
- * Date: 1/4/2016
- * Time: 10:19 AM
+ * Class Maybe
+ * @package Phpixme
  */
-
-namespace PHPixme;
-
-
 abstract class Maybe implements NaturalTransformationInterface, \Countable
 {
-
     // -- Natural Transformation Interface Statics --
     static function of(...$args)
     {
@@ -78,7 +74,7 @@ abstract class Maybe implements NaturalTransformationInterface, \Countable
     public function orElse(callable $hof)
     {
         if ($this->isEmpty()) {
-            return  __assertMaybeType($hof());
+            return __assertMaybeType($hof());
         }
         return $this;
     }
@@ -99,7 +95,8 @@ abstract class Maybe implements NaturalTransformationInterface, \Countable
      * @param callable $hof
      * @return mixed
      */
-    public function reduce(callable $hof) {
+    public function reduce(callable $hof)
+    {
         return $this->get();
     }
 
@@ -107,9 +104,10 @@ abstract class Maybe implements NaturalTransformationInterface, \Countable
 
 }
 
-function __assertMaybeType($unknown) {
+function __assertMaybeType($unknown)
+{
     if (!($unknown instanceof Maybe)) {
-        throw new \Exception ('return value must be an instance of Maybe!');
+        throw new \Exception('return value must be an instance of Maybe!');
     }
     return $unknown;
 }

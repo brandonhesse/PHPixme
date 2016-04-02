@@ -1,11 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rgladson
- * Date: 1/4/2016
- * Time: 10:21 AM
- */
-namespace PHPixme;
+
+namespace Phpixme;
+
 /**
  * Class None
  * @package PHPixme

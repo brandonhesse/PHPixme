@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rgladson
- * Date: 1/4/2016
- * Time: 9:59 AM
- */
 
 namespace PHPixme;
 

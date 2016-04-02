@@ -1,28 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rgladson
- * Date: 1/13/2016
- * Time: 10:12 AM
- */
 
-namespace tests\PHPixme;
-require_once "tests/PHPixme_TestCase.php";
-use PHPixme as P;
+namespace Phpixme;
 const Closure = '\Closure';
-class FunctionalTest extends PHPixme_TestCase
+class FunctionalTest extends PhpixmeTestCase
 {
     public function test_curry()
     {
         $countArgs = function () {
             return func_num_args();
         };
-        $param3 = P\curry(3, $countArgs);
-        $this->assertStringEndsWith(
-            '\curry'
-            , P\curry
-            , 'Ensure the constant is assigned to its function name'
-        );
+        $param3 = curry(3, $countArgs);
         $this->assertInstanceOf(
             Closure
             , $param3
@@ -48,7 +35,7 @@ class FunctionalTest extends PHPixme_TestCase
             , $param3(1)->__invoke(2)->__invoke(3)
             , 'Curried functions should be able to be chained'
         );
-        $curry2 = P\curry(2);
+        $curry2 = curry(2);
         $this->assertInstanceOf(
             Closure
             , $curry2
@@ -71,29 +58,24 @@ class FunctionalTest extends PHPixme_TestCase
         $countArgs = function () {
             return func_num_args();
         };
-        $this->assertStringEndsWith(
-            '\nAry'
-            , P\nAry
-            , 'Ensure the constant is assigned to its function name'
-        );
         $this->assertInstanceOf(
             Closure
-            , P\nAry(1)
+            , nAry(1)
             , 'nAry should be partially applied'
         );
         $this->assertEquals(
             1
-            , P\nAry(1)->__invoke($countArgs)->__invoke(1, 2, 3)
+            , nAry(1)->__invoke($countArgs)->__invoke(1, 2, 3)
             , 'nAry Partially applied should still produce a wrapped function that eats arguments'
         );
         $this->assertInstanceOf(
             Closure
-            , P\nAry(1, $countArgs)
+            , nAry(1, $countArgs)
             , 'nAry fully applied should produce a closure'
         );
         $this->assertEquals(
             1
-            , P\nAry(1, $countArgs)->__invoke(1, 2, 3, 4)
+            , nAry(1, $countArgs)->__invoke(1, 2, 3, 4)
             , 'fully applied should still work the same as partially applied, eating arguments'
         );
     }
@@ -103,20 +85,14 @@ class FunctionalTest extends PHPixme_TestCase
         $countArgs = function () {
             return func_num_args();
         };
-        $this->assertStringEndsWith(
-            '\unary'
-            , P\unary
-            , 'Ensure the constant is assigned to its function name'
-        );
         $this->assertInstanceOf(
             Closure
-            , P\unary($countArgs)
+            , unary($countArgs)
             , 'unary should return a closure'
         );
-
         $this->assertEquals(
             1
-            , P\unary($countArgs)->__invoke(1, 2, 3)
+            , unary($countArgs)->__invoke(1, 2, 3)
             , 'Unary should eat all but one argument'
         );
     }
@@ -126,20 +102,15 @@ class FunctionalTest extends PHPixme_TestCase
         $countArgs = function () {
             return func_num_args();
         };
-        $this->assertStringEndsWith(
-            '\binary'
-            , P\binary
-            , 'Ensure the constant is assigned to its function name'
-        );
         $this->assertInstanceOf(
             Closure
-            , P\binary($countArgs)
+            , binary($countArgs)
             , 'binary should return a closure'
         );
 
         $this->assertEquals(
             2
-            , P\binary($countArgs)->__invoke(1, 2, 3)
+            , binary($countArgs)->__invoke(1, 2, 3)
             , 'binary should eat all but two arguments'
         );
     }
@@ -149,20 +120,15 @@ class FunctionalTest extends PHPixme_TestCase
         $countArgs = function () {
             return func_num_args();
         };
-        $this->assertStringEndsWith(
-            '\ternary'
-            , P\ternary
-            , 'Ensure the constant is assigned to its function name'
-        );
         $this->assertInstanceOf(
             Closure
-            , P\ternary($countArgs)
+            , ternary($countArgs)
             , 'ternary should return a closure'
         );
 
         $this->assertEquals(
             3
-            , P\ternary($countArgs)->__invoke(1, 2, 3, 4)
+            , ternary($countArgs)->__invoke(1, 2, 3, 4)
             , 'ternary should eat all but three arguments'
         );
     }
@@ -172,20 +138,15 @@ class FunctionalTest extends PHPixme_TestCase
         $countArgs = function () {
             return func_num_args();
         };
-        $this->assertStringEndsWith(
-            '\nullary'
-            , P\nullary
-            , 'Ensure the constant is assigned to its function name'
-        );
         $this->assertInstanceOf(
             Closure
-            , P\nullary($countArgs)
+            , nullary($countArgs)
             , 'nullary should return a closure'
         );
 
         $this->assertEquals(
             0
-            , P\nullary($countArgs)->__invoke(1, 2, 3, 4)
+            , nullary($countArgs)->__invoke(1, 2, 3, 4)
             , 'nullary should eat all arguments'
         );
     }
@@ -195,32 +156,26 @@ class FunctionalTest extends PHPixme_TestCase
         $getArgs = function () {
             return func_get_args();
         };
-        $this->assertStringEndsWith(
-            '\flip'
-            , P\flip
-            , 'Ensure the constant is assigned to its function name'
-        );
-
         $this->assertInstanceOf(
             Closure
-            , P\flip($getArgs)
+            , flip($getArgs)
             , 'Flip should return a closure'
         );
 
         $this->assertEquals(
             [2, 1, 3, 4, 5]
-            , P\flip($getArgs)->__invoke(1, 2, 3, 4, 5)
+            , flip($getArgs)->__invoke(1, 2, 3, 4, 5)
             , 'Flip should flip the first two arguments'
         );
         $this->assertInstanceOf(
             Closure
-            , P\flip($getArgs)->__invoke(1)
+            , flip($getArgs)->__invoke(1)
             , 'Flip partially applied should return a closure'
         );
 
         $this->assertEquals(
             [2, 1, 3, 4, 5]
-            , P\flip($getArgs)->__invoke(1)->__invoke(2, 3, 4, 5)
+            , flip($getArgs)->__invoke(1)->__invoke(2, 3, 4, 5)
             , 'Flip partially applied should return the flipped arguments'
         );
 
@@ -228,98 +183,75 @@ class FunctionalTest extends PHPixme_TestCase
 
     public function test_combine()
     {
-        $this->assertStringEndsWith(
-            '\combine'
-            , P\combine
-            , 'Ensure the constant is assigned to its function name'
-        );
+
         $this->assertInstanceOf(
-            Closure
-            , P\combine('json_encode', 'array_reverse')
+            \Closure::class
+            , combine('json_encode', 'array_reverse')
             , 'combine should return a closure'
         );
 
         $this->assertInstanceOf(
-            Closure
-            , P\combine('json_encode')
+            \Closure::class
+            , combine('json_encode')
             , 'combine should be a curried function'
         );
 
         $array = [1, 2, 3];
         $this->assertEquals(
             json_encode(array_reverse($array))
-            , P\combine('json_encode')->__invoke('array_reverse')->__invoke($array)
+            , combine('json_encode')->__invoke('array_reverse')->__invoke($array)
             , 'combine should be able to chain the outputs to produce hof results'
         );
     }
 
     public function test_K_estrel($value = true, $notValue = false)
     {
-        $this->assertStringEndsWith(
-            '\K'
-            , P\K
-            , 'Ensure the constant is assigned to its function name'
-        );
         $this->assertInstanceOf(
             Closure
-            , P\K($value)
+            , K($value)
             , 'K should return a closure'
         );
         $this->assertEquals(
             $value
-            , P\K($value)->__invoke($notValue)
+            , K($value)->__invoke($notValue)
             , 'K resultant closure should return the constant that has been closed'
         );
     }
 
     public function test_KI_te($value = true, $notValue = false)
     {
-        $this->assertStringEndsWith(
-            '\KI'
-            , P\KI
-            , 'Ensure the constant is assigned to its function name'
-        );
+
         $this->assertInstanceOf(
             Closure
-            , P\KI($value)
+            , KI($value)
             , 'KI should return a closure'
         );
         $this->assertEquals(
             $notValue
-            , P\KI($value)->__invoke($notValue)
+            , KI($value)->__invoke($notValue)
             , 'K resultant closure should ignore the constant and return the argument it recieves'
         );
     }
 
     public function test_I_diot_bird($value = true)
     {
-        $this->assertStringEndsWith(
-            '\I'
-            , P\I
-            , 'Ensure the constant is assigned to its function name'
-        );
         $this->assertEquals(
             $value
-            , P\I($value)
+            , I($value)
             , 'The notoriously simple idiot bird proves useful in unusual places'
         );
     }
 
     public function test_S_tarling($value = true)
     {
-        $this->assertStringEndsWith(
-            '\S'
-            , P\S
-            , 'Ensure the constant is assigned to its function name'
-        );
         $this->assertInstanceOf(
-            Closure
-            , P\S(P\I)
+            \Closure::class
+            , S('I')
             , 'Starling should be able to be partially applied'
         );
         $this->assertEquals(
             $value
-            , P\S(P\K)->__invoke(P\K($value))->__invoke($value)
+            , S('K')->__invoke(K($value))->__invoke($value)
             , 'S(K, K($value))($value) === $value is one of the more basic proofs to Starling'
         );
 
@@ -331,10 +263,10 @@ class FunctionalTest extends PHPixme_TestCase
         $kvTupple = function ($v, $k) {
             return [$k, $v];
         };
-        $kvMap = P\ternary('array_map')->__invoke($kvTupple);
+        $kvMap = ternary('array_map')->__invoke($kvTupple);
         $this->assertEquals(
             array_map($kvTupple, $array, array_keys($array))
-            , P\S($kvMap, 'array_keys')->__invoke($array)
+            , S($kvMap, 'array_keys')->__invoke($array)
         );
     }
 
@@ -349,7 +281,7 @@ class FunctionalTest extends PHPixme_TestCase
                 new \ArrayIterator([1]), 1, 0
             ]
             , 'natural interface callback' => [
-                P\Seq([1]), 1, 0
+                Seq([1]), 1, 0
             ]
         ];
     }
@@ -360,7 +292,7 @@ class FunctionalTest extends PHPixme_TestCase
     public function test_fold_callback($value, $expVal, $expKey)
     {
         $startVal = 1;
-        P\fold(function () use ($startVal, $value, $expVal, $expKey) {
+        fold(function () use ($startVal, $value, $expVal, $expKey) {
             $this->assertEquals(
                 4
                 , func_num_args()
@@ -400,24 +332,19 @@ class FunctionalTest extends PHPixme_TestCase
 
     public function test_fold($value = 1, $array = [1, 2, 3, 4])
     {
-        $this->assertStringEndsWith(
-            '\fold'
-            , P\fold
-            , 'Ensure the constant is assigned to its function name'
-        );
         $this->assertInstanceOf(
             Closure
-            , P\fold(P\I, $value)
+            , fold('I', $value)
             , 'fold when partially applied should return a closure'
         );
         $this->assertEquals(
             $value
-            , P\fold(P\I, $value)->__invoke($array)
+            , fold('I', $value)->__invoke($array)
             , 'An idiot applied to fold should always return the start value'
         );
         $this->assertEquals(
             $array[count($array) - 1]
-            , P\fold(P\flip(P\I), $value, $array)
+            , fold(flip('I'), $value, $array)
             , 'The flipped idiot applied to reduce should always return the last unless empty'
         );
     }
@@ -435,13 +362,13 @@ class FunctionalTest extends PHPixme_TestCase
                 , 0
             ]
             , 'add simple S[]' => [
-                P\Seq::of()
+                Seq::of()
                 , 0
                 , $add
                 , 0
             ]
             , 'add simple None' => [
-                P\None()
+                None()
                 , 0
                 , $add
                 , 0
@@ -459,13 +386,13 @@ class FunctionalTest extends PHPixme_TestCase
                 , 6
             ]
             , 'add S[1,2,3]' => [
-                P\Seq::of(1, 2, 3)
+                Seq::of(1, 2, 3)
                 , 0
                 , $add
                 , 6
             ]
             , 'Some(2)+2' => [
-                P\Some(2)
+                Some(2)
                 , 2
                 , $add
                 , 4
@@ -486,31 +413,26 @@ class FunctionalTest extends PHPixme_TestCase
     {
         $this->assertEquals(
             $expected
-            , P\fold($action, $startVal, $arrayLike)
+            , fold($action, $startVal, $arrayLike)
         );
     }
 
 
     public function test_reduce($array = [1, 2, 3, 4])
     {
-        $this->assertStringEndsWith(
-            '\reduce'
-            , P\reduce
-            , 'Ensure the constant is assigned to its function name'
-        );
         $this->assertInstanceOf(
             Closure
-            , P\reduce(P\I)
+            , reduce('I')
             , 'reduce when partially applied should return a closure'
         );
         $this->assertEquals(
             $array[0]
-            , P\reduce(P\I)->__invoke($array)
+            , reduce('I')->__invoke($array)
             , 'An idiot applied to fold should always return the start value'
         );
         $this->assertEquals(
             $array[count($array) - 1]
-            , P\reduce(P\flip(P\I), $array)
+            , reduce(flip('I'), $array)
             , 'The flipped idiot applied to reduce should always return the last'
         );
     }
@@ -519,8 +441,8 @@ class FunctionalTest extends PHPixme_TestCase
     {
         return [
             '[]' => [[]]
-            , 'None' => [P\None()]
-            , 'S[]' => [P\Seq::of()]
+            , 'None' => [None()]
+            , 'S[]' => [Seq::of()]
             , 'ArrayItterator[]' => [new \ArrayIterator([])]
         ];
     }
@@ -531,7 +453,7 @@ class FunctionalTest extends PHPixme_TestCase
      */
     public function test_reduce_contract_violation($arrayLike = [])
     {
-        P\reduce(P\I, $arrayLike);
+        reduce('I', $arrayLike);
     }
 
     public function reduceCallbackProvider()
@@ -544,7 +466,7 @@ class FunctionalTest extends PHPixme_TestCase
                 new \ArrayIterator([1, 2]), 1, 2, 1
             ]
             , 'natural interface callback' => [
-                P\Seq::of(1, 2), 1, 2, 1
+                Seq::of(1, 2), 1, 2, 1
             ]
         ];
     }
@@ -554,7 +476,7 @@ class FunctionalTest extends PHPixme_TestCase
      */
     public function test_reduce_callback($arrayLike, $firstVal, $expVal, $expKey)
     {
-        P\reduce(function () use ($firstVal, $expVal, $expKey, $arrayLike) {
+        reduce(function () use ($firstVal, $expVal, $expKey, $arrayLike) {
             $this->assertEquals(
                 4
                 , func_num_args()
@@ -604,7 +526,7 @@ class FunctionalTest extends PHPixme_TestCase
                 , 1
             ]
             , 'add S[1]' => [
-                P\Seq::of(1)
+                Seq::of(1)
                 , $add
                 , 1
             ]
@@ -615,7 +537,7 @@ class FunctionalTest extends PHPixme_TestCase
                 , 1
             ]
             , 'add Some(2)' => [
-                P\Some(2)
+                Some(2)
                 , $add
                 , 2
             ]
@@ -625,7 +547,7 @@ class FunctionalTest extends PHPixme_TestCase
                 , 6
             ]
             , 'add S[1,2,3]' => [
-                P\Seq::of(1, 2, 3)
+                Seq::of(1, 2, 3)
                 , $add
                 , 6
             ]
@@ -645,23 +567,18 @@ class FunctionalTest extends PHPixme_TestCase
     {
         $this->assertEquals(
             $expected
-            , P\reduce($action, $arrayLike)
+            , reduce($action, $arrayLike)
         );
     }
 
     public function test_map($array = [1, 2, 3])
     {
-        $this->assertStringEndsWith(
-            '\map'
-            , P\map
-            , 'Ensure the constant is assigned to its function name'
-        );
         $this->assertInstanceOf(
             Closure
-            , P\map(P\I)
+            , map('I')
             , 'map when partially applied should return a closure'
         );
-        $result = P\map(P\I)->__invoke($array);
+        $result = map('I')->__invoke($array);
         $this->assertEquals(
             $array
             , $result
@@ -682,10 +599,10 @@ class FunctionalTest extends PHPixme_TestCase
                 [1], 1, 0
             ]
             , 'S[1]' => [
-                P\Seq::of(1), 1, 0
+                Seq::of(1), 1, 0
             ]
             , 'Some(1)' => [
-                P\Some::of(1), 1, 0
+                Some::of(1), 1, 0
             ]
             , 'ArrayItterator[1]' => [
                 new \ArrayIterator([1]), 1, 0
@@ -698,7 +615,7 @@ class FunctionalTest extends PHPixme_TestCase
      */
     public function test_map_callback($arrayLike, $expVal, $expKey)
     {
-        P\map(function () use ($arrayLike, $expVal, $expKey) {
+        map(function () use ($arrayLike, $expVal, $expKey) {
             $this->assertTrue(
                 3 === func_num_args()
                 , 'map callback should receive three arguments'
@@ -745,19 +662,19 @@ class FunctionalTest extends PHPixme_TestCase
                 , [2, 4]
             ]
             , 'S[1,2] * 2' => [
-                P\Seq::of(1, 2)
+                Seq::of(1, 2)
                 , $x2
-                , P\Seq::of(2, 4)
+                , Seq::of(2, 4)
             ]
             , 'Some(1) *2' => [
-                P\Some(1)
+                Some(1)
                 , $x2
-                , P\Some(2)
+                , Some(2)
             ]
             , 'None * 2' => [
-                P\None()
+                None()
                 , $x2
-                , P\None()
+                , None()
             ]
             , '[1,2,3] to string' => [
                 [1, 2, 3]
@@ -775,7 +692,7 @@ class FunctionalTest extends PHPixme_TestCase
     public function test_map_scenario($arrayLike, $hof, $expected)
     {
         $this->assertEquals($expected
-            , P\map($hof, $arrayLike)
+            , map($hof, $arrayLike)
             , 'map on array like should have the expected resultant'
         );
     }
@@ -800,29 +717,24 @@ class FunctionalTest extends PHPixme_TestCase
      */
     public function test_callWith($container)
     {
-        $this->assertStringEndsWith(
-            '\callWith'
-            , P\callWith
-            , 'Ensure the constant is assigned to the function name'
-        );
         $this->assertInstanceOf(
-            Closure
-            , P\callWith('')
+            \Closure::class
+            , callWith('')
             , 'callWith partially applied should be a closure'
         );
         $this->assertInstanceOf(
-            Closure
-            , P\callWith('getArgs')->__invoke($container)
+            \Closure::class
+            , callWith('getArgs')->__invoke($container)
             , 'callWith when fully applied should be a closure'
         );
         $this->assertEquals(
             [1, 2, 3]
-            , P\callWith('getArgs', $container)->__invoke(1, 2, 3)
+            , callWith('getArgs', $container)->__invoke(1, 2, 3)
             , 'callWith should invoke the function with the returned closure'
         );
         $this->assertEquals(
             4,
-            P\callWith('countArgs')->__invoke($container)->__invoke(1, 2, 3, 4)
+            callWith('countArgs')->__invoke($container)->__invoke(1, 2, 3, 4)
             , 'callWith when partially applied should invoke the function with the returned closure'
         );
     }
@@ -832,24 +744,19 @@ class FunctionalTest extends PHPixme_TestCase
      * @dataProvider callWithProvider
      */
     public function test_callWithNonFunction ($container) {
-        P\callWith('404', $container)->__invoke(1, 2, 3, 4);
+        callWith('404', $container)->__invoke(1, 2, 3, 4);
     }
 
     public function test_puckObjectWith()
     {
         $object = new TestClass();
-        $this->assertStringEndsWith(
-            '\pluckObjectWith'
-            , P\pluckObjectWith
-            , 'Ensure the constant is assigned to the function name'
-        );
         $this->assertInstanceOf(
             Closure
-            , P\pluckObjectWith('')
+            , pluckObjectWith('')
             , 'pluckObjectWith should be able to be partially applied'
         );
         $this->assertTrue(
-            P\pluckObjectWith('value')->__invoke($object)
+            pluckObjectWith('value')->__invoke($object)
             , 'pluckObjectWith\'s yielded closure should retrieve the value of the property on object when applied'
         );
     }
@@ -857,19 +764,14 @@ class FunctionalTest extends PHPixme_TestCase
     public function test_puckArrayWith()
     {
         $array = [1, 2, 3];
-        $this->assertStringEndsWith(
-            '\pluckArrayWith'
-            , P\pluckArrayWith
-            , 'Ensure the constant is assigned to the function name'
-        );
         $this->assertInstanceOf(
             Closure
-            , P\pluckArrayWith('')
+            , pluckArrayWith('')
             , 'pluckArrayWith should be able to be partially applied'
         );
         $this->assertEquals(
             $array[0]
-            , P\pluckArrayWith(0)->__invoke($array)
+            , pluckArrayWith(0)->__invoke($array)
             , 'pluckArrayWith\'s yielded closure should retrieve the value of the property on object when applied'
         );
     }
@@ -877,7 +779,7 @@ class FunctionalTest extends PHPixme_TestCase
 
 /**
  * Class TestClass
- * @package tests\PHPixme
+ * @package Phpixme
  * A class to assist in testing properties of object functions
  */
 class TestClass

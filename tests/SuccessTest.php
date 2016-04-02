@@ -1,27 +1,20 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rgladson
- * Date: 1/7/2016
- * Time: 3:22 PM
- */
-namespace tests\PHPixme;
-require_once "tests/PHPixme_TestCase.php";
-use PHPixme as P;
 
-class SuccessTest extends PHPixme_TestCase
+namespace Phpixme;
+
+class SuccessTest extends PhpixmeTestCase
 {
 
     public function test_success_companion()
     {
         $this->assertStringEndsWith(
             '\Success'
-            , P\Success
+            , Success::class
             , 'Ensure the constant ends with the function/class name'
         );
         $this->assertInstanceOf(
-            P\Success,
-            P\Success(false),
+            Success::class,
+            Success(false),
             'the companion function should return an instance of its class'
         );
     }
@@ -29,7 +22,7 @@ class SuccessTest extends PHPixme_TestCase
     public function test_is_status()
     {
 
-        $success = P\Success(true);
+        $success = Success(true);
         $this->assertTrue(
             $success->isSuccess()
             , 'it should be a success'
@@ -49,7 +42,7 @@ class SuccessTest extends PHPixme_TestCase
             , [[], 'should be able to store then retrieve arrays']
             , [100, 'should be able to store then retrieve numbers']
             , ["Hi!", 'should be able to store then retrieve strings']
-            , [P\Failure(new \Exception('Test Exception')), 'Should be able to contain and retrieve failures']
+            , [Failure(new \Exception('Test Exception')), 'Should be able to contain and retrieve failures']
         ];
     }
 
@@ -59,7 +52,7 @@ class SuccessTest extends PHPixme_TestCase
     public function test_get($value, $message)
     {
         $this->assertTrue(
-            $value === (P\Success($value)->get())
+            $value === (Success($value)->get())
             , $message
         );
     }
@@ -67,17 +60,17 @@ class SuccessTest extends PHPixme_TestCase
     public function test_getOrElse($value = true, $default = false)
     {
         $this->assertTrue(
-            $value === (P\Success($value)->getOrElse($default))
+            $value === (Success($value)->getOrElse($default))
             , 'Success->getOrElse should be an its contents'
         );
     }
 
     public function test_orElse($value = true)
     {
-        $instance = P\Success($value);
+        $instance = Success($value);
         $this->assertTrue(
             $instance === ($instance->orElse(function () use ($value) {
-                return P\Success($value);
+                return Success($value);
             }))
             , 'Success->orElse should be an identity'
         );
@@ -86,7 +79,7 @@ class SuccessTest extends PHPixme_TestCase
 
     public function test_filter_callback($value = true)
     {
-        $success = P\Success($value);
+        $success = Success($value);
         $success->filter(function () use ($value, $success) {
             $this->assertTrue(
                 3 === func_num_args()
@@ -110,7 +103,7 @@ class SuccessTest extends PHPixme_TestCase
 
     public function test_filter($value = true)
     {
-        $success = P\Success($value);
+        $success = Success($value);
         $this->assertTrue(
             $success === ($success->filter(function () {
                 return true;
@@ -122,7 +115,7 @@ class SuccessTest extends PHPixme_TestCase
             return false;
         };
         $this->assertInstanceOf(
-            P\Failure
+            Failure::class
             , $success->filter($false)
             , 'Success->filter When receiving a false should become a Failure'
         );
@@ -131,8 +124,8 @@ class SuccessTest extends PHPixme_TestCase
 
     function test_flatMap_callback($value = true)
     {
-        $child = P\Success($value);
-        $success = P\Success($child);
+        $child = Success($value);
+        $success = Success($child);
         $success->flatMap(function () use ($success, $child) {
             $this->assertTrue(
                 3 === func_num_args()
@@ -161,14 +154,14 @@ class SuccessTest extends PHPixme_TestCase
      */
     function test_flatMap_contract_broken()
     {
-        P\Success(true)->flatMap(function () {
+        Success(true)->flatMap(function () {
         });
     }
 
     function test_flatMap_scenario_contains_success($value = true)
     {
-        $child = P\Success($value);
-        $success = P\Success($child);
+        $child = Success($value);
+        $success = Success($child);
         $flatten = function ($value) {
             return $value;
         };
@@ -184,8 +177,8 @@ class SuccessTest extends PHPixme_TestCase
             return $value;
         };
         $this->assertInstanceOf(
-            P\Failure
-            , P\Success(P\Failure(new \Exception()))->flatMap($flatten)
+            Failure::class
+            , Success(Failure(new \Exception()))->flatMap($flatten)
             , 'Success->flatMap shouldn\'t care if the contents returned is a Failure'
         );
     }
@@ -193,8 +186,8 @@ class SuccessTest extends PHPixme_TestCase
 
     function test_flatten_scenario_success($value = true)
     {
-        $child = P\Success($value);
-        $parent = P\Success($child);
+        $child = Success($value);
+        $parent = Success($child);
         $this->assertTrue(
             $child === ($parent->flatten())
             , 'Success->flatten should return its contained Success'
@@ -204,8 +197,8 @@ class SuccessTest extends PHPixme_TestCase
 
     public function test_flatten_scenario_contains_failure()
     {
-        $child = P\Failure(new \Exception());
-        $parent = P\Success($child);
+        $child = Failure(new \Exception());
+        $parent = Success($child);
         $this->assertTrue(
             $child === ($parent->flatten())
             , 'Success->flatten should return its contained Failure'
@@ -218,14 +211,14 @@ class SuccessTest extends PHPixme_TestCase
      */
     function test_flatten_contract_broken($value = true)
     {
-        P\Success($value)->flatten();
+        Success($value)->flatten();
     }
 
     function test_failed($value = true)
     {
         $this->assertInstanceOf(
-            P\Failure
-            , P\Success($value)->failed()
+            Failure::class
+            , Success($value)->failed()
             , 'Success->failed produces a Failure'
         );
     }
@@ -233,7 +226,7 @@ class SuccessTest extends PHPixme_TestCase
 
     function test_map_callback($value = true)
     {
-        $success = P\Success($value);
+        $success = Success($value);
         $success->map(function () use ($value, $success) {
             $this->assertTrue(
                 3 === func_num_args()
@@ -260,13 +253,13 @@ class SuccessTest extends PHPixme_TestCase
      */
     function test_map($value = true)
     {
-        $success = P\Success($value);
+        $success = Success($value);
         $one = function () {
             return 'one';
         };
         $result = $success->map($one);
         $this->assertInstanceOf(
-            P\Success
+            Success::class
             , $result
             , 'Success->map should stay a Success'
         );
@@ -282,7 +275,7 @@ class SuccessTest extends PHPixme_TestCase
 
     public function test_recover($value = true)
     {
-        $success = P\Success($value);
+        $success = Success($value);
         $this->assertTrue(
             $success === ($success->recover(function () {
             }))
@@ -292,7 +285,7 @@ class SuccessTest extends PHPixme_TestCase
 
     public function test_recoverWith($value = true)
     {
-        $success = P\Success($value);
+        $success = Success($value);
         $this->assertTrue(
             $success === ($success->recoverWith(function () {
             }))
@@ -303,7 +296,7 @@ class SuccessTest extends PHPixme_TestCase
     public function test_toArray($value = true)
     {
 
-        $result = P\Success($value)->toArray();
+        $result = Success($value)->toArray();
         $this->assertTrue(
             $result['success']
             , 'Success->toArray method should return an array ["success" => contents]'
@@ -316,9 +309,9 @@ class SuccessTest extends PHPixme_TestCase
 
     public function test_toMaybe($value = true)
     {
-        $result = P\Success($value)->toMaybe();
+        $result = Success($value)->toMaybe();
         $this->assertInstanceOf(
-            P\Some
+            Some::class
             , $result
             , 'Success->toMaybe should result in Some'
         );
@@ -331,7 +324,7 @@ class SuccessTest extends PHPixme_TestCase
 
     public function test_transform_callback($value = true)
     {
-        $success = P\Success($value);
+        $success = Success($value);
         $success->transform(function () use ($value, $success) {
             $this->assertTrue(
                 2 === func_num_args()
@@ -355,8 +348,8 @@ class SuccessTest extends PHPixme_TestCase
 
     public function test_transform_scenario_success_to_success($value = true)
     {
-        $thing1 = P\Success($value);
-        $thing2 = P\Success($value);
+        $thing1 = Success($value);
+        $thing2 = Success($value);
         $noop = function () {
         };
         $switchToThing2 = function () use ($thing2) {
@@ -372,14 +365,14 @@ class SuccessTest extends PHPixme_TestCase
 
     public function test_transform_scenario_success_to_failure($value = true)
     {
-        $failure = P\Failure(new \Exception('test'));
+        $failure = Failure(new \Exception('test'));
         $makeFailure = function () use ($failure) {
             return $failure;
         };
         $noop = function () {
         };
         $this->assertTrue(
-            $failure === P\Success($value)->transform($makeFailure, $noop)
+            $failure === Success($value)->transform($makeFailure, $noop)
             , 'Success->transform Success callback type should be able to be a Failure'
         );
     }
@@ -390,7 +383,7 @@ class SuccessTest extends PHPixme_TestCase
      */
     public function test_transform_broken_contract()
     {
-        P\Success(true)->transform(function () {
+        Success(true)->transform(function () {
         }, function () {
         });
     }
@@ -398,7 +391,7 @@ class SuccessTest extends PHPixme_TestCase
 
     public function test_walk_callback($value = true)
     {
-        $success = P\Success($value);
+        $success = Success($value);
         $success->walk(function () use ($value, $success) {
             $this->assertTrue(
                 3 === func_num_args()
@@ -421,7 +414,7 @@ class SuccessTest extends PHPixme_TestCase
 
     public function test_walk($value = true)
     {
-        $success = P\Success($value);
+        $success = Success($value);
         $ran = 0;
         $success->walk(function () use (&$ran) {
             $ran += 1;

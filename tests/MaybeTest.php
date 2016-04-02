@@ -1,23 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rgladson
- * Date: 1/8/2016
- * Time: 12:46 PM
- */
 
-namespace tests\PHPixme;
-require_once "tests/PHPixme_TestCase.php";
-use PHPixme as P;
+namespace Phpixme;
 
 
-class MaybeTest extends PHPixme_TestCase
+class MaybeTest extends PhpixmeTestCase
 {
 
     public function test_maybe_companion() {
         $this->assertStringEndsWith(
             '\Maybe'
-            , P\Maybe
+            , Maybe::class
             , 'Ensure the constant ends with the function name'
         );
     }
@@ -34,7 +26,7 @@ class MaybeTest extends PHPixme_TestCase
         return [
             [0]
             , ['']
-            , [P\None()]
+            , [None()]
             , [false]
             , [true]
             , [1]
@@ -42,7 +34,7 @@ class MaybeTest extends PHPixme_TestCase
             , ['1']
             , [[1]]
             , [new \stdClass()]
-            , [P\Some('')]
+            , [Some('')]
         ];
     }
 
@@ -54,8 +46,8 @@ class MaybeTest extends PHPixme_TestCase
     {
 
         $this->assertInstanceOf(
-            P\None
-            , P\Maybe($value)
+            None::class
+            , Maybe($value)
             , 'Value ' . json_encode($value, true) . ' should be of type None'
         );
     }
@@ -66,8 +58,8 @@ class MaybeTest extends PHPixme_TestCase
     public function test_Maybe_companion_some_result($value)
     {
         $this->assertInstanceOf(
-            P\Some
-            , P\Maybe($value)
+            Some::class 
+            , Maybe($value)
             , 'Value ' . json_encode($value, true) . ' should be of type Some'
         );
     }
@@ -78,8 +70,8 @@ class MaybeTest extends PHPixme_TestCase
     public function test_static_of_nothing($value)
     {
         $this->assertInstanceOf(
-            P\None
-            , P\Maybe::of($value)
+            None::class
+            , Maybe::of($value)
             , 'Value ' . json_encode($value, true) . ' should be of type Null'
         );
     }
@@ -91,8 +83,8 @@ class MaybeTest extends PHPixme_TestCase
     {
 
         $this->assertInstanceOf(
-            P\Some
-            , P\Maybe::of($value)
+            Some::class
+            , Maybe::of($value)
             , 'Value ' . json_encode($value, true) . ' should be of type Some'
         );
     }
@@ -104,8 +96,8 @@ class MaybeTest extends PHPixme_TestCase
     {
 
         $this->assertInstanceOf(
-            P\None
-            , P\Maybe::from($value)
+            None::class
+            , Maybe::from($value)
             , 'Value ' . json_encode($value, true) . ' should be of type Null'
         );
 
@@ -117,8 +109,8 @@ class MaybeTest extends PHPixme_TestCase
     public function test_static_from_something($value)
     {
         $this->assertInstanceOf(
-            P\Some
-            , P\Maybe::from($value)
+            Some::class
+            , Maybe::from($value)
             , 'Value ' . json_encode($value, true) . ' should be of type Some'
         );
     }

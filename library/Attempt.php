@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rgladson
- * Date: 1/6/2016
- * Time: 11:03 AM
- */
 
-namespace PHPixme;
+namespace Phpixme;
 
 /**
  * Class Attempt
